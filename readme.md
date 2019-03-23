@@ -1,0 +1,1 @@
+DEFLAT Coin
