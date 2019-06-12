@@ -1,4 +1,4 @@
-#DEFLAT Coin
+# DEFLAT Coin
 
 A total of 1,000,000,000 coins will be made available over time, 99.9% will be placed on the market through purchase by real interested, this condition is guaranteed in ethereum contracts, without the possibility of dump by the developers. The other 0.1% of the coins were destined for the first operations in the mainnet, even so it is a very small amount in relation to the total volume.
 
