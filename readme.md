@@ -7,3 +7,10 @@ Another feature is that the price at the source (sale contract) to be always inc
 As explained above no currency is put into circulation without a financial burden on ethereum, allowing a substantial bid in volume and price, which consequently gives a good liquidity to the asset.
 
 Site: https://deflatcoin.io
+
+# AGAINST Token
+
+To ensure the success of the DEFLAT project, we need a stable, high-availability, low-cost network with its own means of exchange, but the financial characteristics of DEFLAT do not allow it to be used as a service token. creation of an auxiliary currency for infrastructure monetization.
+
+Site: https://against.network
+
