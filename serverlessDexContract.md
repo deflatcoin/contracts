@@ -72,10 +72,15 @@ The structures needed to be very basic and summarized so as not to exceed the Et
 </pre>	
 
 1- exists: Formal, true if market exists;
+
 2- address: Pair address;
+
 3- ordersCount: increased after market add;
+
 5- donesCount: incriase after fill order;
+
 6- orders: mapping to market struct;
+
 7- dones: mapping to executed orders struct;
 
 <b>Orders:</b>
@@ -92,10 +97,15 @@ The structures needed to be very basic and summarized so as not to exceed the Et
 </pre>
 
 1- orderId: Order identifier;
+
 2- orderOwner: address of maker account;
+
 3- rate: Value relationship between base and pair;
+
 4- amount: order amount;
+
 5- sell: type of order, sell or buy (1,0);
+
 6- date: order date. 
 
 <b>Orders Done: </b>
@@ -111,9 +121,13 @@ The structures needed to be very basic and summarized so as not to exceed the Et
 </pre>
 
 1- orderId: Order idenfier;
+
 2- filOwner: order fill address;
+
 3- fillAmount: parcial or total fill amount;
+
 4- fillDate: fill action date;
+
 5- rate: rate of executed order.
 
 <b>Vote Status:</b>
