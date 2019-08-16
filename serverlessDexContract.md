@@ -273,7 +273,7 @@ The structures needed to be very basic and summarized so as not to exceed the Et
     }
 </pre>
 
-0- Note: Withdraw in register token has removed; use withdraw function;
+0- Note: Divergent of the actual contract in ropsten test;
 
 1- address: Token to register;
 
@@ -288,6 +288,8 @@ The structures needed to be very basic and summarized so as not to exceed the Et
 6- liskesCount, dislikes and marketsCount: Start with 0;
 
 7- exists: Formal, always true; 
+
+<b>createMarket</b>
 
 <pre>
     function createMarket(address _token, address _tokenPair) public payable {
@@ -304,14 +306,33 @@ The structures needed to be very basic and summarized so as not to exceed the Et
     }
 </pre>
 
+1- _token and _tokenPair: Pair market;
+
+2- openMarketFee: Fee value for market creation;
+
+3- marketsCount: Increase count of markets of base token;
+
+4- marketIndex: Make marketsCount as index of current market;
+
+5- ordersCount and donesCount: Set vars with 0;
+
+6- exists: Formal always true after creation;
+
+<b>withdraw</b>
+
 <pre>
-    function withdraw() public {
-        uint amount = address(this).balance; 
+    function withdraw(uint amount) public {
+	    require(ownwer == msg.sender,"Only for owner");
+        require(amount+garbageFees <= address(this).balance,"No funds")		
         if (owner.send(amount)) {
            emit ctrWithdraw(owner, amount);     
         }  
     }
 </pre>
+
+0- Note: Not is in the actual contract, will be in next contract implementation;
+
+1- Owner profit from token list, markets creation and action fees;
 
 <pre>
     function createOrder(address _token, address _tokenPair, uint _rate, uint _amount, bool _sell) public payable {
