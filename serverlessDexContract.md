@@ -11,7 +11,7 @@
 
 <b>Token Data:</b>
 
-<pré>
+<pre>
     struct token {
       address tokenBase;
       string name;
@@ -27,13 +27,21 @@
 </pre>
 
 1- address: Token address;
+
 2- name: Friendly token name, recovered from contract;
+
 3- symbol: Short token name, recovered from contract;
+
 4- decimals: Decimal places of token, recovered from contract;
-5- likes count & dislikes count: token reputation for gateway filter (optional)
-6- markets count: Incemented to each market created
-7- marketIndex: Index position to address token market
+
+5- likes count & dislikes count: token reputation for gateway filter (optional);
+
+6- markets count: Incemented to each market created;
+
+7- marketIndex: Index position to address token market;
+
 8- markets: market struct mapped by address;
+
 9- voteStatus: indicates if an account has already voted for the token;
 
 
