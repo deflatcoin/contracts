@@ -5,6 +5,12 @@
     mapping(address => token) public tokens;
     mapping(address => bool) public exists;	
   </pre>
+  
+  1- Index: Convert token position to base token address;
+  
+  2- tokens: Mapping to Token Data struct;
+  
+  3- exists: formality only, true if the token is listed.
 
 
 # Tables
@@ -38,7 +44,7 @@
 
 6- markets count: Incemented to each market created;
 
-7- marketIndex: Index position to address token market;
+7- marketIndex: Index position to address of market struct;
 
 8- markets: market struct mapped by address;
 
@@ -81,7 +87,7 @@
       mapping(uint => order) orders; 
       mapping(uint => done) dones;
     }
-</pŕe>
+</pre>
 
 <b>Vote Status:</b>
 
