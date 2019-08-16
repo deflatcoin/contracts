@@ -58,6 +58,25 @@ The structures needed to be very basic and summarized so as not to exceed the Et
 
 9- voteStatus: indicates if an account has already voted for the token;
 
+<p>Markets:</p>
+
+<pre>
+    struct market {  
+      bool exists;
+      address tokenPair;
+      uint ordersCount;
+      uint donesCount;
+      mapping(uint => order) orders; 
+      mapping(uint => done) dones;
+    }
+</pre>	
+
+1- exists: Formal, true if market exists;
+2- address: Pair address;
+3- ordersCount: increased after market add;
+5- donesCount: incriase after fill order;
+6- orders: mapping to market struct;
+7- dones: mapping to executed orders struct;
 
 <b>Orders:</b>
 
@@ -81,19 +100,6 @@ The structures needed to be very basic and summarized so as not to exceed the Et
       uint fillAmount;
       uint fillDate;
       uint rate;   
-    }
-</pre>
-
-<b>Markets:</b>
-
-<pre>
-    struct market {  
-      bool exists;
-      address tokenPair;
-      uint ordersCount;
-      uint donesCount;
-      mapping(uint => order) orders; 
-      mapping(uint => done) dones;
     }
 </pre>
 
