@@ -4,10 +4,10 @@ pragma solidity >= 0.4.24;
 
 interface erc20 {
     function name() external returns (string);
-	function symbol() external returns (string);
-	function decimals() external returns (uint8);
+    function symbol() external returns (string);
+    function decimals() external returns (uint8);
     function transfer(address receiver, uint amount) external;
-	function transferFrom(address from, address to, uint value) external;
+    function transferFrom(address from, address to, uint value) external;
     function balanceOf(address tokenOwner) constant external returns (uint balance);
     function allowance(address _owner, address _spender) constant external returns (uint remaining); 
 }
@@ -18,16 +18,16 @@ contract againstTokenRegister {
     string public comment = "AGAINST Token Index & Full DEX 1.0";
     address internal owner;
     uint public indexCount = 0;
-	uint public registerFee = 0;
+    uint public registerFee = 0;
     uint public ratePlaces = 9;
     uint public openMarketFee = 0;
     uint public actionFee = 10**15;
     uint internal minQtd = (10**18)/(10**3);
 	
-	event orderPlaced(address token, address tokenPair, address ownerId, uint orderId);
-	event orderDone(address token, address tokenPair, uint orderId, uint doneId);
-	event orderCanceled(address token, address tokenPair, uint orderId);
-	event orderRemovedLowBalance(address token, address tokenPair, uint orderId);
+    event orderPlaced(address token, address tokenPair, address ownerId, uint orderId);
+    event orderDone(address token, address tokenPair, uint orderId, uint doneId);
+    event orderCanceled(address token, address tokenPair, uint orderId);
+    event orderRemovedLowBalance(address token, address tokenPair, uint orderId);
     event ctrWithdraw(address wallet, uint value);
   
     struct order {
@@ -40,21 +40,21 @@ contract againstTokenRegister {
     } 
    
     struct done {
-	  uint orderId;
+      uint orderId;
       address fillOwner;
       uint fillAmount;
       uint fillDate;
       uint rate;   
     }
 	
-	struct market {  
+    struct market {  
       bool exists;
       address tokenPair;
       uint ordersCount;
       uint donesCount;
-	  mapping(uint => order) orders; 
+      mapping(uint => order) orders; 
       mapping(uint => done) dones;
-	}
+    }
 
     struct voted {
       bool like;
@@ -75,10 +75,10 @@ contract againstTokenRegister {
     }
 	
     mapping(uint => address) public index;
-	mapping(address => token) public tokens;
+    mapping(address => token) public tokens;
     mapping(address => bool) public exists;	
     	
-	constructor() public {
+    constructor() public {
        owner = address(msg.sender); 
     }
 
@@ -158,15 +158,15 @@ contract againstTokenRegister {
                tokens[_base].markets[_pair].dones[_doneIndex].rate);
     }	
 
-	function changeOwner(address _newOwner) public {
-	  if (msg.sender == owner) {
+    function changeOwner(address _newOwner) public {
+      if (msg.sender == owner) {
 	    owner = _newOwner;
-	  }
-	}
+      }
+    }
 
-	function registerToken(address _token) public payable {
-	   require((msg.sender == owner) || (msg.value >= registerFee), "Register Fee Very Low");
-	   erc20 refToken = erc20(_token);
+    function registerToken(address _token) public payable {
+       require((msg.sender == owner) || (msg.value >= registerFee), "Register Fee Very Low");
+       erc20 refToken = erc20(_token);
        if (!exists[_token]) {            
             indexCount = indexCount+1;
             index[indexCount] = _token; 
@@ -179,10 +179,10 @@ contract againstTokenRegister {
             tokens[_token].marketsCount = 0; 		
             exists[_token] = true;            
        }	             
-	   if (address(this).balance > 0) {
-		    require(owner.send(address(this).balance),"Send error");
-	   }
-	}
+       if (address(this).balance > 0) {
+		 require(owner.send(address(this).balance),"Send error");
+       }
+    }
 
     function createMarket(address _token, address _tokenPair) public payable {
       require(msg.value >= openMarketFee, "Open Market Fee Very Low");
@@ -212,25 +212,25 @@ contract againstTokenRegister {
 	   emit orderPlaced(_token, _tokenPair, msg.sender, tokens[_token].markets[_tokenPair].ordersCount);
     }
 	
-	function tokenLike(address _token) public {	
-        require(exists[_token], "Token not listed");    
-        if (!tokens[_token].voteStatus[msg.sender].like) {
+    function tokenLike(address _token) public {	
+       require(exists[_token], "Token not listed");    
+       if (!tokens[_token].voteStatus[msg.sender].like) {
 	      tokens[_token].likesCount = tokens[_token].likesCount+1;
           tokens[_token].voteStatus[msg.sender].like = true;
           if (tokens[_token].voteStatus[msg.sender].dislike) {
 	          tokens[_token].dislikesCount = tokens[_token].dislikesCount-1;
               tokens[_token].voteStatus[msg.sender].dislike = false;
           }
-        } else {
+       } else {
           tokens[_token].likesCount = tokens[_token].likesCount-1;
           tokens[_token].voteStatus[msg.sender].like = false;
-        }	   
-	}
+       }	   
+    }
 	
-	function tokenDislike(address _token) public {
+    function tokenDislike(address _token) public {
         require(exists[_token],"Token not listed");
-   	    if (!tokens[_token].voteStatus[msg.sender].dislike) {
-	      tokens[_token].dislikesCount = tokens[_token].dislikesCount+1;
+   	if (!tokens[_token].voteStatus[msg.sender].dislike) {
+	  tokens[_token].dislikesCount = tokens[_token].dislikesCount+1;
           tokens[_token].voteStatus[msg.sender].dislike = true;
           if (tokens[_token].voteStatus[msg.sender].like) {
             tokens[_token].likesCount = tokens[_token].likesCount-1;
@@ -240,7 +240,7 @@ contract againstTokenRegister {
 	      tokens[_token].dislikesCount = tokens[_token].dislikesCount-1;
           tokens[_token].voteStatus[msg.sender].dislike = false;
         }	   
-	}		
+    }		
 	
 	function changeRegisterFee(uint _registerFee) public {
 	   require(msg.sender == owner);
@@ -293,22 +293,22 @@ contract againstTokenRegister {
        require(_rate == tokens[_token].markets[_tokenPair].orders[_orderID].rate,"Rate error");
        erc20 tokenMaker = erc20(tokens[_token].tokenBase);
        erc20 tokenTaker = erc20(tokens[_token].markets[_tokenPair].tokenPair);      	
-	   uint amount =  (((_amountFill*tokens[_token].markets[_tokenPair].orders[_orderID].rate)/(10**tokens[_tokenPair].decimals))*(10**tokens[_token].decimals))/(10**ratePlaces);
+       uint amount =  (((_amountFill*tokens[_token].markets[_tokenPair].orders[_orderID].rate)/(10**tokens[_tokenPair].decimals))*(10**tokens[_token].decimals))/(10**ratePlaces);
        require(tokenTaker.allowance(msg.sender, address(this)) >= _amountFill, "Verify taker approval");
        require(tokenTaker.balanceOf(msg.sender) >= _amountFill, "Verify taker balance");	
        require(tokenMaker.allowance(tokens[_token].markets[_tokenPair].orders[_orderID].orderOwner, address(this)) >= amount, "Verify maker approval");
        require(tokenMaker.balanceOf(tokens[_token].markets[_tokenPair].orders[_orderID].orderOwner) >= amount, "Verify maker balance");	
        require(tokens[_token].markets[_tokenPair].orders[_orderID].amount >= amount,"Amount error"); 
-	   tokens[_token].markets[_tokenPair].orders[_orderID].amount=tokens[_token].markets[_tokenPair].orders[_orderID].amount-amount;	         
+       tokens[_token].markets[_tokenPair].orders[_orderID].amount=tokens[_token].markets[_tokenPair].orders[_orderID].amount-amount;	         
        tokenMaker.transferFrom(tokens[_token].markets[_tokenPair].orders[_orderID].orderOwner, msg.sender,amount);
        tokenTaker.transferFrom(msg.sender,tokens[_token].markets[_tokenPair].orders[_orderID].orderOwner,_amountFill);
        tokens[_token].markets[_tokenPair].donesCount = tokens[_token].markets[_tokenPair].donesCount+1;
-	   tokens[_token].markets[_tokenPair].dones[tokens[_token].markets[_tokenPair].donesCount].orderId = _orderID;
+       tokens[_token].markets[_tokenPair].dones[tokens[_token].markets[_tokenPair].donesCount].orderId = _orderID;
        tokens[_token].markets[_tokenPair].dones[tokens[_token].markets[_tokenPair].donesCount].fillOwner = msg.sender;
        tokens[_token].markets[_tokenPair].dones[tokens[_token].markets[_tokenPair].donesCount].fillAmount = _amountFill;
        tokens[_token].markets[_tokenPair].dones[tokens[_token].markets[_tokenPair].donesCount].fillDate = now;
        tokens[_token].markets[_tokenPair].dones[tokens[_token].markets[_tokenPair].donesCount].rate = _rate;
-	   emit orderDone(_token, _tokenPair, _orderID, tokens[_token].markets[_tokenPair].donesCount);
+       emit orderDone(_token, _tokenPair, _orderID, tokens[_token].markets[_tokenPair].donesCount);
        if (tokens[_token].markets[_tokenPair].orders[_orderID].amount*(10**(18-tokens[_token].decimals)) < minQtd) {
           require(tokens[_token].markets[_tokenPair].ordersCount > 0, "bof orders");
           uint top = tokens[_token].markets[_tokenPair].ordersCount;
