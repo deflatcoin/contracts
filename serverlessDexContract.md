@@ -1,3 +1,11 @@
+# Abstract
+
+The purpose of the contract is to provide a routine for asset swapping, without the need for a of-chain database.
+
+For this part of the contract emulates the behavior of a relational database within a blockchain.
+
+The structures needed to be very basic and summarized so as not to exceed the Ethernet bytecode size limit at this time.
+
 # Primary Mapps:
   
   <pre>
