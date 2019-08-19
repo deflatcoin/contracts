@@ -273,8 +273,6 @@ The structures needed to be very basic and summarized so as not to exceed the Et
     }
 </pre>
 
-0- Note: Divergent of the actual contract in ropsten test;
-
 1- address: Token to register;
 
 2- refToken: Get data from token contract;
@@ -330,8 +328,6 @@ The structures needed to be very basic and summarized so as not to exceed the Et
     }
 </pre>
 
-0- Note: Not is in the actual contract, will be in next contract implementation;
-
 1- Owner profit from token list, markets creation and action fees;
 
 <pre>
@@ -347,7 +343,7 @@ The structures needed to be very basic and summarized so as not to exceed the Et
        tokens[_token].markets[_tokenPair].orders[tokens[_token].markets[_tokenPair].ordersCount].amount = _amount;
        tokens[_token].markets[_tokenPair].orders[tokens[_token].markets[_tokenPair].ordersCount].sell = _sell;
        tokens[_token].markets[_tokenPair].orders[tokens[_token].markets[_tokenPair].ordersCount].date = now;
-	   emit orderPlaced(_token, _tokenPair, msg.sender, tokens[_token].markets[_tokenPair].ordersCount);
+       emit orderPlaced(_token, _tokenPair, msg.sender, tokens[_token].markets[_tokenPair].ordersCount);
     }
 </pre>
 	
