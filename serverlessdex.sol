@@ -22,7 +22,8 @@ contract againstTokenRegister {
     uint public ratePlaces = 9;
     uint public openMarketFee = 0;
     uint public actionFee = 10**15;
-    uint internal minQtd = (10**18)/(10**3);
+    uint public garbageFees = 0;
+    uint internal minQtd = (10**18)/(10**4);
 	
     event orderPlaced(address token, address tokenPair, address ownerId, uint orderId);
     event orderDone(address token, address tokenPair, uint orderId, uint doneId);
@@ -159,9 +160,9 @@ contract againstTokenRegister {
     }	
 
     function changeOwner(address _newOwner) public {
-      if (msg.sender == owner) {
+	  if (msg.sender == owner) {
 	    owner = _newOwner;
-      }
+	  }
     }
 
     function registerToken(address _token) public payable {
@@ -179,9 +180,6 @@ contract againstTokenRegister {
             tokens[_token].marketsCount = 0; 		
             exists[_token] = true;            
        }	             
-       if (address(this).balance > 0) {
-		 require(owner.send(address(this).balance),"Send error");
-       }
     }
 
     function createMarket(address _token, address _tokenPair) public payable {
@@ -209,28 +207,29 @@ contract againstTokenRegister {
        tokens[_token].markets[_tokenPair].orders[tokens[_token].markets[_tokenPair].ordersCount].amount = _amount;
        tokens[_token].markets[_tokenPair].orders[tokens[_token].markets[_tokenPair].ordersCount].sell = _sell;
        tokens[_token].markets[_tokenPair].orders[tokens[_token].markets[_tokenPair].ordersCount].date = now;
+       garbageFees += actionFee; 
 	   emit orderPlaced(_token, _tokenPair, msg.sender, tokens[_token].markets[_tokenPair].ordersCount);
     }
 	
     function tokenLike(address _token) public {	
-       require(exists[_token], "Token not listed");    
-       if (!tokens[_token].voteStatus[msg.sender].like) {
-	      tokens[_token].likesCount = tokens[_token].likesCount+1;
+        require(exists[_token], "Token not listed");    
+        if (!tokens[_token].voteStatus[msg.sender].like) {
+          tokens[_token].likesCount = tokens[_token].likesCount+1;
           tokens[_token].voteStatus[msg.sender].like = true;
           if (tokens[_token].voteStatus[msg.sender].dislike) {
 	          tokens[_token].dislikesCount = tokens[_token].dislikesCount-1;
               tokens[_token].voteStatus[msg.sender].dislike = false;
           }
-       } else {
+        } else {
           tokens[_token].likesCount = tokens[_token].likesCount-1;
           tokens[_token].voteStatus[msg.sender].like = false;
-       }	   
+        }	   
     }
 	
     function tokenDislike(address _token) public {
         require(exists[_token],"Token not listed");
-   	if (!tokens[_token].voteStatus[msg.sender].dislike) {
-	  tokens[_token].dislikesCount = tokens[_token].dislikesCount+1;
+   	    if (!tokens[_token].voteStatus[msg.sender].dislike) {
+	      tokens[_token].dislikesCount = tokens[_token].dislikesCount+1;
           tokens[_token].voteStatus[msg.sender].dislike = true;
           if (tokens[_token].voteStatus[msg.sender].like) {
             tokens[_token].likesCount = tokens[_token].likesCount-1;
@@ -242,23 +241,24 @@ contract againstTokenRegister {
         }	   
     }		
 	
-	function changeRegisterFee(uint _registerFee) public {
+    function changeRegisterFee(uint _registerFee) public {
 	   require(msg.sender == owner);
 	   registerFee = _registerFee;	  
-	}	
+    }	
 
-	function changeOpenMarketFee(uint _openMarketFee) public {
+    function changeOpenMarketFee(uint _openMarketFee) public {
 	   require(msg.sender == owner,"Access denied");
 	   openMarketFee = _openMarketFee;
-	}
+    }
 
-	function changeActionFee(uint _actionFee) public {
+    function changeActionFee(uint _actionFee) public {
 	   require(msg.sender == owner,"Access denied");
 	   actionFee = _actionFee;
-	}
+    }
 
-    function withdraw() public {
-        uint amount = address(this).balance; 
+    function withdraw(uint amount) public {
+	require(owner == msg.sender,"Only for owner");
+        require(amount+garbageFees <= address(this).balance,"No funds");		
         if (owner.send(amount)) {
            emit ctrWithdraw(owner, amount);     
         }  
@@ -282,9 +282,12 @@ contract againstTokenRegister {
            tokens[_token].markets[_tokenPair].orders[top].amount = 0;           
        }       
 	   emit orderCanceled(_token, _tokenPair, _orderId);
-       if (msg.sender.send(actionFee)) {
-          emit ctrWithdraw(msg.sender, actionFee);     
-       }  
+       if (garbageFees >= actionFee) {
+          garbageFees -= actionFee;
+          if (msg.sender.send(actionFee)) {
+             emit ctrWithdraw(msg.sender, actionFee);     
+          }
+       }    
     } 
 
     function fillOrder(uint _orderID, address _token, address _tokenPair, uint _rate, uint _amountFill) public payable {             
@@ -313,8 +316,11 @@ contract againstTokenRegister {
           require(tokens[_token].markets[_tokenPair].ordersCount > 0, "bof orders");
           uint top = tokens[_token].markets[_tokenPair].ordersCount;
           tokens[_token].markets[_tokenPair].ordersCount = tokens[_token].markets[_tokenPair].ordersCount-1;
-          if (address(tokens[_token].markets[_tokenPair].orders[_orderID].orderOwner).send(actionFee)) {
-             emit ctrWithdraw(address(tokens[_token].markets[_tokenPair].orders[_orderID].orderOwner), actionFee);     
+          if (garbageFees >= actionFee) {
+             garbageFees -= actionFee;
+             if (address(tokens[_token].markets[_tokenPair].orders[_orderID].orderOwner).send(actionFee)) {
+                emit ctrWithdraw(address(tokens[_token].markets[_tokenPair].orders[_orderID].orderOwner), actionFee);     
+             }
           }          
           if (tokens[_token].markets[_tokenPair].orders[top].amount > 0) {
               tokens[_token].markets[_tokenPair].orders[_orderID] = tokens[_token].markets[_tokenPair].orders[top];          
