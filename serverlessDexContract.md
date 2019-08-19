@@ -350,11 +350,17 @@ The structures needed to be very basic and summarized so as not to exceed the Et
 </pre>
 
 1- _token: Base token;
+
 2- _tokenPair: Pair token;
+
 3- _rate: Value relationship between base and pair;
+
 4- _amount: Amount maker;
+
 5- _sell: Type of order 1 sell or 0 buy;
+
 6- ordersCount: Increase by 1 for each order;
+
 7- orderId: Actual orderCount;
 
 <b>tokenLike</b>
@@ -469,6 +475,9 @@ The structures needed to be very basic and summarized so as not to exceed the Et
 </pre>
 
 1- _orderID: Current order Index;
-2- _token & _tokenPair: Pair; 
+
+2- _token & _tokenPair: Pair;
+
 4- _rate: Value relationship between base and pair;
+
 5- _amountFill: Total or partial take value;
