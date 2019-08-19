@@ -320,7 +320,7 @@ The structures needed to be very basic and summarized so as not to exceed the Et
 
 <pre>
     function withdraw(uint amount) public {
-	    require(ownwer == msg.sender,"Only for owner");
+	require(ownwer == msg.sender,"Only for owner");
         require(amount+garbageFees <= address(this).balance,"No funds")		
         if (owner.send(amount)) {
            emit ctrWithdraw(owner, amount);     
@@ -329,6 +329,8 @@ The structures needed to be very basic and summarized so as not to exceed the Et
 </pre>
 
 1- Owner profit from token list, markets creation and action fees;
+
+<b>createOrder</b>
 
 <pre>
     function createOrder(address _token, address _tokenPair, uint _rate, uint _amount, bool _sell) public payable {
@@ -346,15 +348,25 @@ The structures needed to be very basic and summarized so as not to exceed the Et
        emit orderPlaced(_token, _tokenPair, msg.sender, tokens[_token].markets[_tokenPair].ordersCount);
     }
 </pre>
-	
+
+1- _token: Base token;
+2- _tokenPair: Pair token;
+3- _rate: Value relationship between base and pair;
+4- _amount: Amount maker;
+5- _sell: Type of order 1 sell or 0 buy;
+6- ordersCount: Increase by 1 for each order;
+7- orderId: Actual orderCount;
+
+<b>tokenLike</b>
+
 <pre>
     function tokenLike(address _token) public {	
        require(exists[_token], "Token not listed");    
        if (!tokens[_token].voteStatus[msg.sender].like) {
-	      tokens[_token].likesCount = tokens[_token].likesCount+1;
+	  tokens[_token].likesCount = tokens[_token].likesCount+1;
           tokens[_token].voteStatus[msg.sender].like = true;
           if (tokens[_token].voteStatus[msg.sender].dislike) {
-	          tokens[_token].dislikesCount = tokens[_token].dislikesCount-1;
+	      tokens[_token].dislikesCount = tokens[_token].dislikesCount-1;
               tokens[_token].voteStatus[msg.sender].dislike = false;
           }
        } else {
@@ -363,6 +375,8 @@ The structures needed to be very basic and summarized so as not to exceed the Et
        }	   
     }
 </pre>
+
+<b>tokenDislike</b>
 
 <pre>	
     function tokenDislike(address _token) public {
@@ -380,6 +394,8 @@ The structures needed to be very basic and summarized so as not to exceed the Et
         }	   
     }
 </pre>	
+	
+<b>cancelOrder</b>	
 	
 <pre>
     function cancelOrder(uint _orderId, address _token, address _tokenPair) public payable {
@@ -404,7 +420,12 @@ The structures needed to be very basic and summarized so as not to exceed the Et
           emit ctrWithdraw(msg.sender, actionFee);     
        }  
     }
-</pre>	
+</pre>
+
+1- _orderId: Current order Index;
+2- _token & _tokenPair: Pair.
+
+<b>fillOrder</b>
 
 <pre>
     function fillOrder(uint _orderID, address _token, address _tokenPair, uint _rate, uint _amountFill) public payable {             
@@ -446,3 +467,8 @@ The structures needed to be very basic and summarized so as not to exceed the Et
     }  
 }
 </pre>
+
+1- _orderID: Current order Index;
+2- _token & _tokenPair: Pair; 
+4- _rate: Value relationship between base and pair;
+5- _amountFill: Total or partial take value;
